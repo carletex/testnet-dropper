@@ -8,7 +8,6 @@ import { Toaster } from "react-hot-toast";
 import "@rainbow-me/rainbowkit/styles.css";
 import { appChains } from "~~/services/web3/wagmiConnectors";
 import { wagmiClient } from "~~/services/web3/wagmiClient";
-import Header from "~~/components/Header";
 import Footer from "~~/components/Footer";
 
 import { useEffect } from "react";
@@ -32,7 +31,6 @@ const ScaffoldEthApp = ({ Component, pageProps }: AppProps) => {
       <NextNProgress />
       <RainbowKitProvider chains={appChains.chains}>
         <div className="flex flex-col min-h-screen">
-          <Header />
           <main className="flex flex-col flex-1">
             <Component {...pageProps} />
           </main>

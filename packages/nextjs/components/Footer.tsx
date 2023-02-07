@@ -27,7 +27,7 @@ export default function Footer() {
           <div className="flex items-center gap-2 text-sm">
             <div>
               <a
-                href="https://github.com/scaffold-eth/se-2"
+                href="https://github.com/carletex/testnet-dropper"
                 target="_blank"
                 rel="noreferrer"
                 className="underline underline-offset-2"
@@ -37,25 +37,14 @@ export default function Footer() {
             </div>
             <span>·</span>
             <div>
-              Built with <HeartIcon className="inline-block h-4 w-4" /> at 🏰{" "}
+              Built with <HeartIcon className="inline-block h-4 w-4" /> with 🏗️{" "}
               <a
-                href="https://buidlguidl.com/"
+                href="https://github.com/scaffold-eth/se-2/"
                 target="_blank"
                 rel="noreferrer"
                 className="underline underline-offset-2"
               >
-                BuidlGuidl
-              </a>
-            </div>
-            <span>·</span>
-            <div>
-              <a
-                href="https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA"
-                target="_blank"
-                rel="noreferrer"
-                className="underline underline-offset-2"
-              >
-                Support
+                Scaffold-ETH 2
               </a>
             </div>
           </div>

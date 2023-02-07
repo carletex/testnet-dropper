@@ -1,8 +1,29 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import React from "react";
+import React, { useState } from "react";
 
 const Home: NextPage = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const triggerFaucet = async () => {
+    setIsLoading(true);
+    let response;
+    try {
+      response = await fetch("/api/trigger-faucet", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    } catch (e) {
+      console.log("error", e);
+    } finally {
+      setIsLoading(false);
+    }
+
+    console.log("response", response);
+  };
+
   return (
     <>
       <Head>
@@ -19,7 +40,9 @@ const Home: NextPage = () => {
             Feed your address QR into the dropper's scanner and get some Goerli & Sepolia ETH!
           </p>
           <p className="text-center text-lg">
-            <button className="btn">Get some ETH!</button>
+            <button className={`btn ${isLoading ? "loading" : ""}`} onClick={triggerFaucet}>
+              Get some ETH!
+            </button>
           </p>
         </div>
       </div>

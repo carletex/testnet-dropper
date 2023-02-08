@@ -1,9 +1,11 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import React, { useState } from "react";
+import { QrReader } from "react-qr-reader";
 
 const Home: NextPage = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [data, setData] = useState("No result");
 
   const triggerFaucet = async () => {
     setIsLoading(true);
@@ -44,6 +46,22 @@ const Home: NextPage = () => {
               Get some ETH!
             </button>
           </p>
+
+          <QrReader
+            onResult={(result, error) => {
+              if (!!result) {
+                // @ts-ignore
+                setData(result?.text);
+              }
+
+              if (!!error) {
+                console.info(error);
+              }
+            }}
+            // @ts-ignore
+            style={{ width: "100%" }}
+          />
+          <p>{data}</p>
         </div>
       </div>
     </>

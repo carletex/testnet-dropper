@@ -1,29 +1,44 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import React, { useState } from "react";
-import { QrReader } from "react-qr-reader";
+import React, { useRef, useState } from "react";
+// @ts-ignore
+import QrReader from "react-qr-reader";
+import { QrCodeIcon } from "@heroicons/react/24/outline";
+import { useOutsideClick } from "~~/hooks/scaffold-eth";
+import { ethers } from "ethers";
+import { toast } from "~~/utils/scaffold-eth";
 
 const Home: NextPage = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [data, setData] = useState("No result");
+  const [scanOpen, setScanOpen] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
 
-  const triggerFaucet = async () => {
+  useOutsideClick(modalRef, () => {
+    if (scanOpen) {
+      setScanOpen(false);
+    }
+  });
+
+  const triggerFaucet = async (address: string) => {
     setIsLoading(true);
-    let response;
+    setScanOpen(false);
+    const toastId = toast.loading("Processing request...");
     try {
-      response = await fetch("/api/trigger-faucet", {
+      await fetch("/api/trigger-faucet", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
+        body: JSON.stringify({ address }),
       });
     } catch (e) {
-      console.log("error", e);
+      toast.error(`Dropper error ${JSON.stringify(e)}`);
     } finally {
       setIsLoading(false);
+      toast.remove(toastId);
     }
 
-    console.log("response", response);
+    toast.success("TX sent! You should receive your test ETH shorty.");
   };
 
   return (
@@ -42,26 +57,40 @@ const Home: NextPage = () => {
             Feed your address QR into the dropper's scanner and get some Goerli & Sepolia ETH!
           </p>
           <p className="text-center text-lg">
-            <button className={`btn ${isLoading ? "loading" : ""}`} onClick={triggerFaucet}>
+            <button
+              className={`btn ${isLoading ? "loading" : ""}`}
+              onClick={() => setTimeout(() => setScanOpen(true), 0)}
+            >
               Get some ETH!
             </button>
           </p>
 
-          <QrReader
-            onResult={(result, error) => {
-              if (!!result) {
-                // @ts-ignore
-                setData(result?.text);
-              }
-
-              if (!!error) {
-                console.info(error);
-              }
-            }}
-            // @ts-ignore
-            style={{ width: "100%" }}
-          />
-          <p>{data}</p>
+          {scanOpen && (
+            <div className="modal modal-open">
+              <div className="modal-box" ref={modalRef}>
+                <h3 className="font-bold text-lg">
+                  <QrCodeIcon className="w-6 inline-block" /> Scan your Wallet Address
+                </h3>
+                <div className="py-4">
+                  <QrReader
+                    onScan={(result: string) => {
+                      if (!!result) {
+                        // @ts-ignore
+                        if (ethers.utils.isAddress(result)) {
+                          triggerFaucet(result);
+                        } else {
+                          // Invalid address. ToDo. toast?
+                          console.error("Invalid address");
+                        }
+                      }
+                    }}
+                    // @ts-ignore
+                    style={{ width: "100%" }}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </>

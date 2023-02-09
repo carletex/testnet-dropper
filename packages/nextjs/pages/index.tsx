@@ -1,12 +1,14 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import React, { useRef, useState } from "react";
-// @ts-ignore
-import QrReader from "react-qr-reader";
 import { QrCodeIcon } from "@heroicons/react/24/outline";
 import { useOutsideClick } from "~~/hooks/scaffold-eth";
 import { ethers } from "ethers";
 import { toast } from "~~/utils/scaffold-eth";
+import dynamic from "next/dynamic";
+
+// @ts-ignore
+const QrReader = dynamic(() => import("react-qr-reader"), { ssr: false });
 
 const Home: NextPage = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -73,6 +75,7 @@ const Home: NextPage = () => {
                 </h3>
                 <div className="py-4">
                   <QrReader
+                    // @ts-ignore
                     onScan={(result: string) => {
                       if (!!result) {
                         // @ts-ignore
@@ -84,7 +87,7 @@ const Home: NextPage = () => {
                         }
                       }
                     }}
-                    // @ts-ignore
+                    onError={(error: any) => console.log(error)}
                     style={{ width: "100%" }}
                   />
                 </div>

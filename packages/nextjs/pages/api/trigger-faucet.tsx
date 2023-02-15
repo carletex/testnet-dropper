@@ -6,8 +6,7 @@ const FAUCET_AMOUNT = "0.01";
 const infura_api_key = process.env.INFURA_API_KEY;
 const wallet_private_key = process.env.WALLET_PRIVATE_KEY;
 
-// ToDo. Protect endpoint with
-// ToDo. send funds
+// ToDo. Protect endpoint
 export default async function handler(request: NextApiRequest, response: NextApiResponse) {
   if (!wallet_private_key) return;
   if (request.method !== "POST") {

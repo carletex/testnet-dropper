@@ -41,7 +41,11 @@ const Home: NextPage = () => {
       toast.remove(toastId);
     }
 
-    toast.success("TX sent! You should receive your test ETH shorty.");
+    toast.success(
+      <>
+        <p className="font-bold mt-0">TX sent!</p> You should receive your test ETH shorty.
+      </>,
+    );
   };
 
   return (

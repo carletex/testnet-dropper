@@ -1,43 +1,41 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
-import React, { useRef, useState } from "react";
-import { QrCodeIcon } from "@heroicons/react/24/outline";
-import { useOutsideClick } from "~~/hooks/scaffold-eth";
+import React, { useState } from "react";
 import { ethers } from "ethers";
 import { toast } from "~~/utils/scaffold-eth";
 import dynamic from "next/dynamic";
+import RainbowKitCustomConnectButton from "~~/components/scaffold-eth/RainbowKitCustomConnectButton";
+import { useLocalStorage } from "usehooks-ts";
 
 // @ts-ignore
 const QrReader = dynamic(() => import("react-qr-reader"), { ssr: false });
 
 const Home: NextPage = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [scanOpen, setScanOpen] = useState(false);
-  const modalRef = useRef<HTMLDivElement>(null);
-
-  useOutsideClick(modalRef, () => {
-    if (scanOpen) {
-      setScanOpen(false);
-    }
-  });
+  const [sleep, setSleep] = useState(false);
+  const [faucetSecret, setFaucetSecret] = useLocalStorage("faucet_secret", "");
 
   const triggerFaucet = async (address: string) => {
-    setIsLoading(true);
-    setScanOpen(false);
+    if (sleep) return;
+
     const toastId = toast.loading("Processing request...");
+    toast.success(`Address: ${address}`);
+    setSleep(true);
+
+    setTimeout(() => {
+      setSleep(false);
+    }, 10000);
     try {
       await fetch("/api/trigger-faucet", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ address }),
+        body: JSON.stringify({ address, secret: faucetSecret }),
       });
     } catch (e) {
       toast.error(`Dropper error ${JSON.stringify(e)}`);
     } finally {
-      setIsLoading(false);
       toast.remove(toastId);
     }
 
@@ -55,16 +53,12 @@ const Home: NextPage = () => {
       </Head>
 
       <div className="flex items-center flex-col flex-grow pt-10 bg-[url('/assets/clouds.svg')] bg-no-repeat bg-[center_5rem] bg-[length:1000px]">
+        <div>
+          <RainbowKitCustomConnectButton setFaucetSecret={setFaucetSecret} faucetSecret={faucetSecret} />
+        </div>
         <div className="mt-[150px] px-5">
           <div className="text-center">
-            <Image
-              src="/assets/logo.svg"
-              alt="BG Logo"
-              width={257}
-              height={50}
-              className="inline-block"
-              onClick={() => setTimeout(() => setScanOpen(true), 0)}
-            />
+            <Image src="/assets/logo.svg" alt="BG Logo" width={257} height={50} className="inline-block" />
           </div>
           <h1 className="text-center mb-8">
             <span className="block text-2xl font-bold">Testnet Faucet</span>
@@ -72,16 +66,6 @@ const Home: NextPage = () => {
           <p className="text-center text-lg">
             Feed your address QR into the dropper's scanner and get some Goerli & Sepolia ETH!
           </p>
-          <div className="text-center text-lg">
-            <Image
-              src="/assets/button.png"
-              alt="Get some ETH!"
-              width={287}
-              height={63}
-              className={`inline-block cursor-pointer relative active:top-2 mt-[50px] ${isLoading ? "opacity-20" : ""}`}
-              onClick={() => setTimeout(() => setScanOpen(true), 0)}
-            />
-          </div>
 
           <div className="text-center">
             <Image
@@ -89,38 +73,29 @@ const Home: NextPage = () => {
               alt="BG chest"
               width={354}
               height={98}
-              className={`inline-block cursor-pointer relative active:top-2 mt-[50px] ${isLoading ? "opacity-20" : ""}`}
-              onClick={() => setTimeout(() => setScanOpen(true), 0)}
+              className="inline-block relative active:top-2 mt-[50px]"
             />
           </div>
 
-          {scanOpen && (
-            <div className="modal modal-open">
-              <div className="modal-box" ref={modalRef}>
-                <h3 className="font-bold text-lg">
-                  <QrCodeIcon className="w-6 inline-block" /> Scan your Wallet Address
-                </h3>
-                <div className="py-4">
-                  <QrReader
-                    // @ts-ignore
-                    onScan={(result: string) => {
-                      if (!!result) {
-                        // @ts-ignore
-                        if (ethers.utils.isAddress(result)) {
-                          triggerFaucet(result);
-                        } else {
-                          // Invalid address. ToDo. toast?
-                          console.error("Invalid address");
-                        }
-                      }
-                    }}
-                    onError={(error: any) => console.log(error)}
-                    style={{ width: "100%" }}
-                  />
-                </div>
-              </div>
-            </div>
-          )}
+          <div className={`py-4 max-w-md mt-12 m-auto ${sleep ? "opacity-20" : ""}`}>
+            <QrReader
+              // @ts-ignore
+              onScan={(result: string) => {
+                if (!!result) {
+                  // @ts-ignore
+                  const cleanedAddress = result.replace("ethereum:", "").split("@")[0];
+                  if (ethers.utils.isAddress(cleanedAddress)) {
+                    triggerFaucet(cleanedAddress);
+                  } else {
+                    // Invalid address. ToDo. toast?
+                    console.error("Invalid address", cleanedAddress);
+                  }
+                }
+              }}
+              onError={(error: any) => console.log(error)}
+              style={{ width: "100%" }}
+            />
+          </div>
         </div>
       </div>
     </>

@@ -5,6 +5,7 @@ import { ethers } from "ethers";
 const FAUCET_AMOUNT = "0.01";
 const infura_api_key = process.env.INFURA_API_KEY;
 const wallet_private_key = process.env.WALLET_PRIVATE_KEY;
+const REQUEST_SECRET = process.env.REQUEST_SECRET ?? "HOLAAAAA";
 
 // ToDo. Protect endpoint
 export default async function handler(request: NextApiRequest, response: NextApiResponse) {
@@ -14,7 +15,12 @@ export default async function handler(request: NextApiRequest, response: NextApi
     return;
   }
 
-  const { address } = request.body;
+  const { address, secret } = request.body;
+
+  if (secret !== REQUEST_SECRET) {
+    response.status(401).json({ message: "Not authorized" });
+    return;
+  }
   if (!ethers.utils.isAddress(address)) {
     response.status(400).json({ message: "Wrong address" });
   }

@@ -80,13 +80,13 @@ const Home: NextPage = () => {
         </div>
         <div className="mt-[150px] px-5">
           <div className="text-center">
-            <Image src="/assets/logo.svg" alt="BG Logo" width={257} height={50} className="inline-block" />
+            <Image src="/assets/logo.svg" alt="BG Logo" width={385} height={75} className="inline-block" />
           </div>
           <h1 className="text-center mb-8">
-            <span className="block text-2xl font-bold">Testnet Faucet</span>
+            <span className="block font-bold mt-4 text-[80px]">Testnet Faucet</span>
           </h1>
-          <p className="text-center text-lg">
-            Feed your address QR into the dropper's scanner and get some Goerli & Sepolia ETH!
+          <p className="text-center text-4xl px-[50px]">
+            Show us your wallet receive QR and get dropped Goerli & Sepolia ETH!
           </p>
 
           <div className="text-center">
@@ -120,14 +120,14 @@ const Home: NextPage = () => {
           </div>
         </div>
 
-        <div className="mt-14 mb-10">
+        <div className="mt-14 mb-10 text-center">
           <h3 className="text-2xl font-bold">Recent drops</h3>
           <ul>
             {drops
               .slice(0)
               .reverse()
               .map((add, index) => (
-                <li key={`${add}_${index}`} className="mt-2">
+                <li key={`${add}_${index}`} className="mt-2 flex justify-center">
                   <Address address={add} />
                 </li>
               ))}

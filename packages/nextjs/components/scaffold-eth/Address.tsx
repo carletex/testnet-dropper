@@ -80,7 +80,7 @@ export default function Address({ address, blockExplorer, disableAddressLink, fo
       {disableAddressLink ? (
         <span className="ml-1.5 text-lg font-normal">{displayAddress}</span>
       ) : (
-        <a className="ml-1.5 text-lg font-normal" target="_blank" href={explorerLink} rel="noopener noreferrer">
+        <a className="ml-1.5 text-3xl font-normal" target="_blank" href={explorerLink} rel="noopener noreferrer">
           {displayAddress}
         </a>
       )}

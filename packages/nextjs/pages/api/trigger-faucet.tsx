@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { ethers } from "ethers";
 
 // in ETH
-const FAUCET_AMOUNT = "0.01";
+const FAUCET_AMOUNT = "0.5";
 const infura_api_key = process.env.INFURA_API_KEY;
 const wallet_private_key = process.env.WALLET_PRIVATE_KEY;
 const REQUEST_SECRET = process.env.REQUEST_SECRET ?? "HOLAAAAA";

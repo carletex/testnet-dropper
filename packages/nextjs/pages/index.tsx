@@ -86,7 +86,8 @@ const Home: NextPage = () => {
             <span className="block font-bold mt-4 text-[80px]">Testnet Faucet</span>
           </h1>
           <p className="text-center text-4xl px-[50px]">
-            Show us your wallet receive QR and get dropped Goerli & Sepolia ETH!
+            Show us your wallet receive QR and get dropped
+            <br /> <strong>💲Goerli💲</strong> & <strong>Sepolia</strong> ETH!
           </p>
 
           <div className="text-center">

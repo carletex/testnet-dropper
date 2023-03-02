@@ -19,14 +19,15 @@ const Home: NextPage = () => {
     if (sleep) return;
 
     const toastId = toast.loading("Processing request...");
-    toast.success(`Address: ${address}`);
     setSleep(true);
 
     setTimeout(() => {
       setSleep(false);
     }, 10000);
+
+    let response;
     try {
-      await fetch("/api/trigger-faucet", {
+      response = await fetch("/api/trigger-faucet", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -39,11 +40,21 @@ const Home: NextPage = () => {
       toast.remove(toastId);
     }
 
-    toast.success(
-      <>
-        <p className="font-bold mt-0">TX sent!</p> You should receive your test ETH shorty.
-      </>,
-    );
+    console.log("re", response);
+
+    if (response?.status === 200) {
+      toast.success(
+        <>
+          <p className="font-bold mt-0">TX sent!</p> You should receive your test ETH shorty.
+        </>,
+      );
+    } else {
+      toast.error(
+        <>
+          <p className="font-bold mt-0">Noooop!</p>
+        </>,
+      );
+    }
   };
 
   return (

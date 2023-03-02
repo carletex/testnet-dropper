@@ -13,7 +13,7 @@ const adminAddresses = [
   "0xc1470707Ed388697A15B9B9f1f5f4cC882E28a45",
   "0xf40D36a4fEbD8aA52DB8b93f6D7dad0FF7fa2B6c",
   // burner
-  "0x8Bd9d92bD8B7877239bf8Be19f7F2eeF4f93F0Ec",
+  "0x8393A66F048F181FFD8044Ad7E260222848Dff8f",
 ];
 
 // ToDo. Protect endpoint

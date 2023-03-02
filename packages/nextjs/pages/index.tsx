@@ -7,6 +7,7 @@ import { toast } from "~~/utils/scaffold-eth";
 import dynamic from "next/dynamic";
 import RainbowKitCustomConnectButton from "~~/components/scaffold-eth/RainbowKitCustomConnectButton";
 import { useLocalStorage } from "usehooks-ts";
+import { Address } from "~~/components/scaffold-eth";
 
 // @ts-ignore
 const QrReader = dynamic(() => import("react-qr-reader"), { ssr: false });
@@ -14,6 +15,7 @@ const QrReader = dynamic(() => import("react-qr-reader"), { ssr: false });
 const Home: NextPage = () => {
   const [sleep, setSleep] = useState(false);
   const [faucetSecret, setFaucetSecret] = useLocalStorage("faucet_secret", "");
+  const [drops, setDrops] = useLocalStorage<string[]>("faucet_drops", []);
 
   const triggerFaucet = async (address: string) => {
     if (sleep) return;
@@ -40,9 +42,18 @@ const Home: NextPage = () => {
       toast.remove(toastId);
     }
 
-    console.log("re", response);
+    console.log("Trigger response", response);
 
     if (response?.status === 200) {
+      const dropsCopy: string[] = [...drops];
+      dropsCopy.push(address);
+
+      if (dropsCopy.length > 10) {
+        dropsCopy.shift();
+      }
+
+      setDrops(dropsCopy);
+
       toast.success(
         <>
           <p className="font-bold mt-0">TX sent!</p> You should receive your test ETH shorty.
@@ -107,6 +118,20 @@ const Home: NextPage = () => {
               style={{ width: "100%" }}
             />
           </div>
+        </div>
+
+        <div className="mt-14 mb-10">
+          <h3 className="text-2xl font-bold">Recent drops</h3>
+          <ul>
+            {drops
+              .slice(0)
+              .reverse()
+              .map((add, index) => (
+                <li key={`${add}_${index}`} className="mt-2">
+                  <Address address={add} />
+                </li>
+              ))}
+          </ul>
         </div>
       </div>
     </>

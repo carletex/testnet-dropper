@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { ethers } from "ethers";
 import { toast } from "~~/utils/scaffold-eth";
 import dynamic from "next/dynamic";
@@ -9,15 +9,25 @@ import RainbowKitCustomConnectButton from "~~/components/scaffold-eth/RainbowKit
 import { useLocalStorage, useWindowSize } from "usehooks-ts";
 import { Address } from "~~/components/scaffold-eth";
 import Confetti from "react-confetti";
+import { useOutsideClick } from "~~/hooks/scaffold-eth";
 
 // @ts-ignore
 const QrReader = dynamic(() => import("react-qr-reader"), { ssr: false });
 
 const Home: NextPage = () => {
   const [sleep, setSleep] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
   const [faucetSecret, setFaucetSecret] = useLocalStorage("faucet_secret", "");
   const [drops, setDrops] = useLocalStorage<string[]>("faucet_drops", []);
   const { width, height } = useWindowSize();
+  const modalRef = useRef<HTMLDivElement>(null);
+  const [clickCount, setClickCount] = useState(0);
+  const [lastClickTimestamp, setLastClickTimestamp] = useState(0);
+  useOutsideClick(modalRef, () => {
+    if (modalOpen) {
+      setModalOpen(false);
+    }
+  });
 
   const triggerFaucet = async (address: string) => {
     if (sleep) return;
@@ -100,6 +110,21 @@ const Home: NextPage = () => {
               width={354}
               height={98}
               className="inline-block relative active:top-2 mt-[50px]"
+              onClick={() => {
+                if (lastClickTimestamp === 0) {
+                  setLastClickTimestamp(Date.now());
+                }
+                let count = clickCount;
+                if (Date.now() > lastClickTimestamp + 1000) {
+                  count = 0;
+                }
+                setLastClickTimestamp(Date.now());
+                setClickCount(count + 1);
+                if (count === 4) {
+                  setTimeout(() => setModalOpen(true), 0);
+                  setClickCount(0);
+                }
+              }}
             />
           </div>
 
@@ -123,7 +148,6 @@ const Home: NextPage = () => {
             />
           </div>
         </div>
-
         <div className="mt-14 mb-10 text-center">
           <h3 className="text-2xl font-bold">Recent drops</h3>
           <ul>
@@ -132,10 +156,18 @@ const Home: NextPage = () => {
               .reverse()
               .map((add, index) => (
                 <li key={`${add}_${index}`} className="mt-2 flex justify-center">
-                  <Address address={add} />
+                  <Address address={add} disableAddressLink={true} />
                 </li>
               ))}
           </ul>
+        </div>
+        <div className={`modal ${modalOpen ? "modal-open" : ""}`}>
+          <div className="modal-box" ref={modalRef}>
+            <h3 className="font-bold text-lg text-center">Fund the faucet!</h3>
+            <p className="py-4">
+              <img src="/faucet_qr.png" alt="qr" />
+            </p>
+          </div>
         </div>
       </div>
     </>

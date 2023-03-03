@@ -6,8 +6,9 @@ import { ethers } from "ethers";
 import { toast } from "~~/utils/scaffold-eth";
 import dynamic from "next/dynamic";
 import RainbowKitCustomConnectButton from "~~/components/scaffold-eth/RainbowKitCustomConnectButton";
-import { useLocalStorage } from "usehooks-ts";
+import { useLocalStorage, useWindowSize } from "usehooks-ts";
 import { Address } from "~~/components/scaffold-eth";
+import Confetti from "react-confetti";
 
 // @ts-ignore
 const QrReader = dynamic(() => import("react-qr-reader"), { ssr: false });
@@ -16,6 +17,7 @@ const Home: NextPage = () => {
   const [sleep, setSleep] = useState(false);
   const [faucetSecret, setFaucetSecret] = useLocalStorage("faucet_secret", "");
   const [drops, setDrops] = useLocalStorage<string[]>("faucet_drops", []);
+  const { width, height } = useWindowSize();
 
   const triggerFaucet = async (address: string) => {
     if (sleep) return;
@@ -75,6 +77,7 @@ const Home: NextPage = () => {
       </Head>
 
       <div className="flex items-center flex-col flex-grow pt-10 bg-[url('/assets/clouds.svg')] bg-no-repeat bg-[center_5rem] bg-[length:1000px]">
+        {sleep && <Confetti width={width} height={height} />}
         <div>
           <RainbowKitCustomConnectButton setFaucetSecret={setFaucetSecret} faucetSecret={faucetSecret} />
         </div>

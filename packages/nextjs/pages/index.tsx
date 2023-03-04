@@ -10,14 +10,42 @@ import { useLocalStorage, useWindowSize } from "usehooks-ts";
 import { Address } from "~~/components/scaffold-eth";
 import Confetti from "react-confetti";
 import { useOutsideClick } from "~~/hooks/scaffold-eth";
+import { Wheel } from "react-custom-roulette";
 
 // @ts-ignore
 const QrReader = dynamic(() => import("react-qr-reader"), { ssr: false });
+
+const rouletteData = [
+  { option: "0.01 ETH", style: { backgroundColor: "grey" } },
+  { option: "0.10 ETH", style: { backgroundColor: "#00e220" } },
+  { option: "0.25 ETH", style: { backgroundColor: "#03c1ff" } },
+  { option: "1 ETH", style: { backgroundColor: "gold" } },
+  // { option: "0.25 ETH", style: { backgroundColor: "#03c1ff" } },
+  // { option: "0.10 ETH", style: { backgroundColor: "#00e220" } },
+  // { option: "0.01 ETH", style: { backgroundColor: "grey" } },
+  // { option: "0.25 ETH", style: { backgroundColor: "#03c1ff" } },
+  // { option: "0.10 ETH", style: { backgroundColor: "#00e220" } },
+  // { option: "0.25 ETH", style: { backgroundColor: "#03c1ff" } },
+  // { option: "0.10 ETH", style: { backgroundColor: "#00e220" } },
+  // { option: "0.25 ETH", style: { backgroundColor: "#03c1ff" } },
+];
+
+const valueToPrizeIndex = {
+  "0.01": 0,
+  "0.10": 1,
+  "0.25": 2,
+  "1": 3,
+};
 
 const Home: NextPage = () => {
   const [sleep, setSleep] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [showConfeti, setShowConfeti] = useState(false);
+  const [faucetValue, setFaucetValue] = useState("");
+
+  const [mustSpin, setMustSpin] = useState(false);
+  const [prizeNumber, setPrizeNumber] = useState(0);
+
   const [faucetSecret, setFaucetSecret] = useLocalStorage("faucet_secret", "");
   const [drops, setDrops] = useLocalStorage<string[]>("faucet_drops", []);
   const { width, height } = useWindowSize();
@@ -55,9 +83,14 @@ const Home: NextPage = () => {
       toast.remove(toastId);
     }
 
-    console.log("Trigger response", response);
-
     if (response?.status === 200) {
+      const { faucet_value } = await response?.json();
+      console.log("Trigger response", faucet_value);
+      setFaucetValue(faucet_value);
+      // @ts-ignore
+      setPrizeNumber(valueToPrizeIndex[faucet_value]);
+      setMustSpin(true);
+
       const dropsCopy: string[] = [...drops];
       dropsCopy.push(address);
 
@@ -66,17 +99,6 @@ const Home: NextPage = () => {
       }
 
       setDrops(dropsCopy);
-
-      toast.success(
-        <>
-          <p className="font-bold mt-0">TX sent!</p> You should receive your test ETH shorty.
-        </>,
-      );
-      setShowConfeti(true);
-
-      setTimeout(() => {
-        setShowConfeti(false);
-      }, 8000);
     } else {
       toast.error(
         <>
@@ -108,7 +130,6 @@ const Home: NextPage = () => {
             Show us your wallet receive QR and get dropped
             <br /> <strong>💲Goerli💲</strong> & <strong>Sepolia</strong> ETH!
           </p>
-
           <div className="text-center">
             <Image
               src="/assets/chest.svg"
@@ -133,26 +154,50 @@ const Home: NextPage = () => {
               }}
             />
           </div>
+          {faucetValue ? (
+            <div className="w-[448px] h-[448px] flex text-center items-center justify-center m-auto mt-12">
+              <Wheel
+                mustStartSpinning={mustSpin}
+                prizeNumber={prizeNumber}
+                data={rouletteData}
+                onStopSpinning={() => {
+                  setMustSpin(false);
+                  setShowConfeti(true);
 
-          <div className={`py-4 max-w-md mt-12 m-auto ${sleep ? "opacity-20" : ""}`}>
-            <QrReader
-              // @ts-ignore
-              onScan={(result: string) => {
-                if (!!result) {
-                  // @ts-ignore
-                  const cleanedAddress = result.replace("ethereum:", "").split("@")[0];
-                  if (ethers.utils.isAddress(cleanedAddress)) {
-                    triggerFaucet(cleanedAddress);
-                  } else {
-                    // Invalid address. ToDo. toast?
-                    console.error("Invalid address", cleanedAddress);
+                  setTimeout(() => {
+                    setFaucetValue("");
+                    setShowConfeti(false);
+                  }, 8000);
+
+                  toast.success(
+                    <>
+                      <p className="font-bold mt-0">TX sent!</p> You should receive your test ETH shorty.
+                    </>,
+                  );
+                }}
+              />
+            </div>
+          ) : (
+            <div className={`py-4 max-w-md mt-12 m-auto ${sleep ? "opacity-20" : ""}`}>
+              <QrReader
+                // @ts-ignore
+                onScan={(result: string) => {
+                  if (!!result) {
+                    // @ts-ignore
+                    const cleanedAddress = result.replace("ethereum:", "").split("@")[0];
+                    if (ethers.utils.isAddress(cleanedAddress)) {
+                      triggerFaucet(cleanedAddress);
+                    } else {
+                      // Invalid address. ToDo. toast?
+                      console.error("Invalid address", cleanedAddress);
+                    }
                   }
-                }
-              }}
-              onError={(error: any) => console.log(error)}
-              style={{ width: "100%" }}
-            />
-          </div>
+                }}
+                onError={(error: any) => console.log(error)}
+                style={{ width: "100%" }}
+              />
+            </div>
+          )}
         </div>
         <div className="mt-14 mb-10 text-center">
           <h3 className="text-2xl font-bold">Recent drops</h3>

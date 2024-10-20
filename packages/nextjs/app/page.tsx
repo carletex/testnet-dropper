@@ -1,10 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import type { NextPage } from "next";
 import { useLocalStorage } from "usehooks-ts";
 import { useAccount } from "wagmi";
 import { TxnNotification } from "~~/hooks/scaffold-eth";
 import scaffoldConfig from "~~/scaffold.config";
+import { FAUCET_LOCALSTORGAGE_KEY } from "~~/utils/faucet";
 import { getBlockExplorerTxLink, notification } from "~~/utils/scaffold-eth";
 
 const { targetNetworks } = scaffoldConfig;
@@ -13,11 +15,13 @@ const mainNetwork = targetNetworks[0];
 
 const Home: NextPage = () => {
   const { address: connectedAddress } = useAccount();
-  const [faucetSecret] = useLocalStorage("faucet_secret", "", {
+  const [isLoading, setIsLoading] = useState(false);
+  const [faucetSecret] = useLocalStorage(FAUCET_LOCALSTORGAGE_KEY, "", {
     initializeWithValue: false,
   });
 
   const handleFund = async () => {
+    setIsLoading(true);
     try {
       const res = await fetch("/api/trigger-faucet", {
         method: "POST",
@@ -28,9 +32,8 @@ const Home: NextPage = () => {
       });
 
       if (!res.ok) {
-        const data = await res.json();
-        console.log("The error data", data);
-        throw new Error("Error funding");
+        const data = (await res.json()) as { error: string };
+        throw new Error(data.error);
       }
 
       const data = (await res.json()) as { hash: string };
@@ -49,6 +52,8 @@ const Home: NextPage = () => {
     } catch (e) {
       console.error(e);
       notification.error("Failed to fund");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -56,7 +61,7 @@ const Home: NextPage = () => {
     <>
       <div className="flex items-center flex-col flex-grow pt-10">
         <button className="btn btn-primary btn-md" onClick={handleFund}>
-          Fund me
+          {isLoading ? <span className="loading loading-spinner loading-sm"></span> : "Fund me"}
         </button>
       </div>
     </>

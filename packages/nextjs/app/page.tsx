@@ -72,7 +72,8 @@ const Home: NextPage = () => {
   return (
     <>
       <div className="flex items-center flex-col flex-grow pt-10">
-        <div className="mt-8">
+        <h1 className="text-2xl">Welcome to DevCon CTF dropper</h1>
+        <div className="mt-4">
           <LazyScanner
             onScan={result => {
               const firstValue = result[0];
@@ -83,6 +84,7 @@ const Home: NextPage = () => {
             }}
             styles={{
               container: { width: "300px", height: "300px" },
+              video: { borderColor: "#00ff00", borderWidth: "3px" },
             }}
             onError={(error: any) => notification.error(`QrCode scanner: ${error.message}`)}
             paused={isLoading}

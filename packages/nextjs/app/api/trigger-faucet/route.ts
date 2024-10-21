@@ -32,8 +32,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Not authorized" }, { status: 401 });
     }
 
-    console.log("Triggering faucet for", address);
-
     if (!address || !isAddress(address)) {
       return NextResponse.json({ error: "Invalid address" }, { status: 400 });
     }

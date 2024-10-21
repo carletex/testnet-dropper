@@ -27,6 +27,13 @@ yarn chain
 yarn start
 ```
 
+5. Important files:
+
+- Login api: https://github.com/carletex/testnet-dropper/blob/0e4aaf50b87ad4cc2ddf0f51dbf9e1e110546144/packages/nextjs/app/api/login/route.ts
+- Trigger faucet api: https://github.com/carletex/testnet-dropper/blob/0e4aaf50b87ad4cc2ddf0f51dbf9e1e110546144/packages/nextjs/app/api/trigger-faucet/route.ts
+- Trigger frontend logic: https://github.com/carletex/testnet-dropper/blob/0e4aaf50b87ad4cc2ddf0f51dbf9e1e110546144/packages/nextjs/app/page.tsx
+- Constants: https://github.com/carletex/testnet-dropper/blob/0e4aaf50b87ad4cc2ddf0f51dbf9e1e110546144/packages/nextjs/utils/faucet.ts
+
 ## Admin
 
 - Add your address in [ADMIN_ADDRESSES](https://github.com/carletex/testnet-dropper/blob/cb8a39e8d5f65fab53dc7897df2f19a2b65e5626/packages/nextjs/utils/faucet.ts#L4)
@@ -39,4 +46,3 @@ yarn start
 - Make sure `WALLET_PRIVATE_KEY` is set in `pacakges/nextjs/.env.local` and funded
 
 - Update the `REQUEST_SECRET` in `package/nextjs/.env.local`
-

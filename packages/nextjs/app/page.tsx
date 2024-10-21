@@ -84,7 +84,7 @@ const Home: NextPage = () => {
             styles={{
               container: { width: "300px", height: "300px" },
             }}
-            onError={(error: any) => console.log(error)}
+            onError={(error: any) => notification.error(`QrCode scanner: ${error.message}`)}
             paused={isLoading}
           />
         </div>

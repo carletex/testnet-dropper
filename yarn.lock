@@ -2120,6 +2120,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ~5.40.0
     "@uniswap/sdk-core": ~4.0.1
     "@uniswap/v2-sdk": ~3.0.1
+    "@yudiel/react-qr-scanner": ^2.0.8
     abitype: 1.0.6
     autoprefixer: ~10.4.20
     blo: ~1.0.1
@@ -2617,6 +2618,20 @@ __metadata:
   version: 1.0.3
   resolution: "@types/dom-screen-wake-lock@npm:1.0.3"
   checksum: 66bece3508b4f4147db97a530c758f8f5d3132ef00c06cab1db4bf2b4af6a3a614ae0a0ba6b53ddc4177a6545adf9d312547087256efc8eff7314b13221380b8
+  languageName: node
+  linkType: hard
+
+"@types/dom-webcodecs@npm:^0.1.13":
+  version: 0.1.13
+  resolution: "@types/dom-webcodecs@npm:0.1.13"
+  checksum: 57b9912afab8cc536354fd18b86fdf440a7ed8be95ef526871075ba6810c254db3a6ce8fe78705d411993ddb6a025060ec2f2aa054fec2e7385407422791a15e
+  languageName: node
+  linkType: hard
+
+"@types/emscripten@npm:^1.39.13":
+  version: 1.39.13
+  resolution: "@types/emscripten@npm:1.39.13"
+  checksum: 6a50f43a90db981e088c76219578a8e9eea0add3ed99d2daed3dfe8f8b755557b89ea5aea0166db2e9399882e109971f1724636101850a46cee51dc4c9337b1f
   languageName: node
   linkType: hard
 
@@ -3808,6 +3823,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@yudiel/react-qr-scanner@npm:^2.0.8":
+  version: 2.0.8
+  resolution: "@yudiel/react-qr-scanner@npm:2.0.8"
+  dependencies:
+    barcode-detector: ^2.2.7
+    webrtc-adapter: 9.0.1
+  peerDependencies:
+    react: ^17 || ^18
+    react-dom: ^17 || ^18
+  checksum: 0d87d53e9e669fa222d991b35fab3df289ee1f7a012693b9c75ce27acf3da60c56a2dbb607beb17fb6d9ed23acd8bc49cbd96e4791b5bc6345be388096c30f2e
+  languageName: node
+  linkType: hard
+
 "abbrev@npm:1":
   version: 1.1.1
   resolution: "abbrev@npm:1.1.1"
@@ -4447,6 +4475,16 @@ __metadata:
   version: 1.0.2
   resolution: "balanced-match@npm:1.0.2"
   checksum: 9706c088a283058a8a99e0bf91b0a2f75497f185980d9ffa8b304de1d9e58ebda7c72c07ebf01dadedaac5b2907b2c6f566f660d62bd336c3468e960403b9d65
+  languageName: node
+  linkType: hard
+
+"barcode-detector@npm:^2.2.7":
+  version: 2.2.11
+  resolution: "barcode-detector@npm:2.2.11"
+  dependencies:
+    "@types/dom-webcodecs": ^0.1.13
+    zxing-wasm: 1.2.14
+  checksum: 2ab40f4f48b6373f2f638fc019137658805110a62f32b0e38fc716e4973d10ac750bce720d6a8423e763de71634bfd563d367294c98c6332972a94d41d5f9a66
   languageName: node
   linkType: hard
 
@@ -11934,6 +11972,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"sdp@npm:^3.2.0":
+  version: 3.2.0
+  resolution: "sdp@npm:3.2.0"
+  checksum: 227885bddab9a5845e56ae184ff51e43ec7bc155e7f1ed2f17ca1b012e6767011d5bd01b6c4064ded8e3b6f6bf3c9b26b2cf754b9c8662285988ed27b54f37b1
+  languageName: node
+  linkType: hard
+
 "se-2@workspace:.":
   version: 0.0.0-use.local
   resolution: "se-2@workspace:."
@@ -13977,6 +14022,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"webrtc-adapter@npm:9.0.1":
+  version: 9.0.1
+  resolution: "webrtc-adapter@npm:9.0.1"
+  dependencies:
+    sdp: ^3.2.0
+  checksum: b9a5d24dc43e00f5fb5423d4f5974ddfd6d45019eea374e8fb947560a820d66ad7ab5bee976c734b3db4ff09641be8a362e3e800b5906a5e81c6dbb155cc4256
+  languageName: node
+  linkType: hard
+
 "whatwg-url@npm:^5.0.0":
   version: 5.0.0
   resolution: "whatwg-url@npm:5.0.0"
@@ -14491,5 +14545,14 @@ __metadata:
     react:
       optional: true
   checksum: 13190ee8e8a797c5347b525a7c392be62b2addacdd9645dd20d37ea053f96c7c7067c099c6201e98ebb8d54991f2e04e241cc323f9a25b841d44f0ae048e3afc
+  languageName: node
+  linkType: hard
+
+"zxing-wasm@npm:1.2.14":
+  version: 1.2.14
+  resolution: "zxing-wasm@npm:1.2.14"
+  dependencies:
+    "@types/emscripten": ^1.39.13
+  checksum: 86a08c97b0628082813ea5c014f364ebb6f234df05c87f794a419da07d0be3ed7d28bbbaad46625d49f7c1d82ab79813022549242fb1ee0d2837d15dddac92b6
   languageName: node
   linkType: hard

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { recoverMessageAddress } from "viem";
-import { ADMIN_ADDRESSES, REQUEST_SECRET } from "~~/utils/faucet";
+import { ADMIN_ADDRESSES, MESSAGE_TO_SIGN, REQUEST_SECRET } from "~~/utils/faucet";
 
 export async function POST(req: Request) {
   try {
@@ -10,7 +10,7 @@ export async function POST(req: Request) {
     }
 
     const signingAddress = await recoverMessageAddress({
-      message: "Enable the testnet dropper",
+      message: MESSAGE_TO_SIGN,
       signature: body.signature,
     });
 

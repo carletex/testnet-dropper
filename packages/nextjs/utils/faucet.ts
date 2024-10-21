@@ -14,3 +14,5 @@ export const ADMIN_ADDRESSES = [
   // burner
   "0x8393A66F048F181FFD8044Ad7E260222848Dff8f",
 ];
+
+export const MESSAGE_TO_SIGN = "Enable the dropper";

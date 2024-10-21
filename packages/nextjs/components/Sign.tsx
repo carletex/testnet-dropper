@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
 import { useSignMessage } from "wagmi";
-import { FAUCET_LOCALSTORGAGE_KEY, REQUEST_SECRET } from "~~/utils/faucet";
+import { FAUCET_LOCALSTORGAGE_KEY, MESSAGE_TO_SIGN, REQUEST_SECRET } from "~~/utils/faucet";
 import { getParsedError, notification } from "~~/utils/scaffold-eth";
 
 export const Sign = () => {
@@ -14,7 +14,7 @@ export const Sign = () => {
   const handleSign = async () => {
     setIsLoading(true);
     try {
-      const signature = await signMessageAsync({ message: "Enable the testnet dropper" });
+      const signature = await signMessageAsync({ message: MESSAGE_TO_SIGN });
 
       const res = await fetch("/api/login", {
         method: "POST",

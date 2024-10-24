@@ -35,6 +35,28 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
   // Get the deployed contract to interact with it after deploying.
   const yourContract = await hre.ethers.getContract<Contract>("YourContract", deployer);
   console.log("👋 Initial greeting:", await yourContract.greeting());
+
+  // :: Faucet ::
+  await deploy("Faucet", {
+    from: deployer,
+    log: true,
+    autoMine: true,
+  });
+
+  console.log("💵 Faucet deployed");
+
+  const faucetOwner = "";
+  const withdrawAddresses = ["0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199"];
+
+  const faucetContract = await hre.ethers.getContract<Contract>("Faucet", deployer);
+  for (const address of withdrawAddresses) {
+    await faucetContract.grantWithdrawRole(address);
+  }
+  if (faucetOwner) {
+    await faucetContract.transferOwnership(faucetOwner);
+  }
+
+  console.log("🚰 Faucet configured");
 };
 
 export default deployYourContract;
